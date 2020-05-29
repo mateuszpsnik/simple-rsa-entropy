@@ -100,7 +100,47 @@ namespace SimpleRSA
 
         private void entropyButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                rsa.CountStatisticsAndEntropy(rsa.Ciphertext);
 
+                SaveFileDialog statisticsDialog = new SaveFileDialog();
+                statisticsDialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                statisticsDialog.Filter = "text files (*.txt)|*.txt";
+                statisticsDialog.FileName = "statistics";
+
+                if (statisticsDialog.ShowDialog() == true)
+                {
+                    using (StreamWriter writer = new StreamWriter(statisticsDialog.FileName))
+                    {
+                        writer.WriteLine("byte value - occurrances - probability");
+
+                        var byteOccurence = from pair in rsa.ByteOccurrence orderby pair.Value descending select pair;
+
+                        foreach (var pair in byteOccurence)
+                            writer.WriteLine($"{pair.Key}\t\t" +
+                                $"{pair.Value}\t{rsa.ByteProbability[pair.Key]}");
+                    }
+                }
+
+
+                SaveFileDialog entropyDialog = new SaveFileDialog();
+                entropyDialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                entropyDialog.Filter = "text files (*.txt)|*.txt";
+                entropyDialog.FileName = "entropy";
+
+                if (entropyDialog.ShowDialog() == true)
+                {
+                    using (StreamWriter writer = new StreamWriter(entropyDialog.FileName))
+                    {
+                        writer.WriteLine($"Entropy: {rsa.Entropy}");
+                    }
+                }
+            }
+            catch (EncryptionException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         //MessageBox shown when key is being counted

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Numerics;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace SimpleRSA
 {
@@ -18,12 +17,15 @@ namespace SimpleRSA
         {
             keyGenerated = false;
             messageEncrypted = false;
+            entropy = 0.0;
         }
 
         RandomPrimeNumber randomPrime = new RandomPrimeNumber();
 
         BigInteger ciphertext;
-        string decryptedCiphertext;
+        Dictionary<byte, int> byteOccurrence = new Dictionary<byte, int>();
+        Dictionary<byte, double> byteProbability = new Dictionary<byte, double>();
+        double entropy;
         BigInteger p;
         BigInteger q;
         BigInteger n;
@@ -39,7 +41,9 @@ namespace SimpleRSA
 
 
         public BigInteger Ciphertext => ciphertext;
-        public string DecryptedCiphertext => decryptedCiphertext;
+        public Dictionary<byte, int> ByteOccurrence => byteOccurrence;
+        public Dictionary<byte, double> ByteProbability => byteProbability;
+        public double Entropy => entropy;
 
         /*
          The key for the RSA encryption is generates in the following way:
@@ -101,15 +105,35 @@ namespace SimpleRSA
             OnMessageEncrypted(EventArgs.Empty);
         }
 
-        public void Decrypt(BigInteger ciphertext)
+        public void CountStatisticsAndEntropy(BigInteger ciphertext)
         {
             if (!messageEncrypted)
                 throw new EncryptionException("You did not encrypt any message");
 
-            //c^d = (m^e)^d = m (mod n)
-            BigInteger decryptedAsNumber = BigInteger.ModPow(ciphertext, d, n);
-            byte[] decryptedAsByteArray = decryptedAsNumber.ToByteArray();
-            decryptedCiphertext = Encoding.ASCII.GetString(decryptedAsByteArray);
+            byte[] encryptedAsByteArray = ciphertext.ToByteArray();
+
+            byte[] countOccurrances = new byte[byte.MaxValue + 1];
+
+            foreach (byte b in encryptedAsByteArray)
+                countOccurrances[b]++;
+
+            int numberOfBytes = encryptedAsByteArray.Length;
+            for (int i = 0; i <= byte.MaxValue; i++)
+            {
+                int occurrence = countOccurrances[i];
+                if (occurrence != 0)
+                {
+                    byteOccurrence.Add(Convert.ToByte(i), occurrence);
+                    double probability = (double)occurrence / numberOfBytes;
+                    byteProbability.Add(Convert.ToByte(i), probability);
+                }
+            }
+                
+            foreach (double probability in byteProbability.Values)
+            {
+                double term = -probability * Math.Log2(probability);
+                entropy += term;
+            }
         }
 
         /*
