@@ -62,9 +62,9 @@ namespace SimpleRSA
             //according to Wikipedia, p and q should be chosen at random, 
             //and should be similar in magnitude but differ in length by a few digits 
             //to make factoring harder
-            p = randomPrime.Generate(128);
+            p = randomPrime.Generate(129);
             Debug.WriteLine($"p = {p}"); //writes p to output window so that we can check, if everything is ok
-            q = randomPrime.Generate(124);
+            q = randomPrime.Generate(128);
             Debug.WriteLine($"q = {q}");
             n = p * q;
             Debug.WriteLine($"n = {n}");
@@ -110,28 +110,29 @@ namespace SimpleRSA
             if (!messageEncrypted)
                 throw new EncryptionException("You did not encrypt any message");
 
-            byte[] encryptedAsByteArray = ciphertext.ToByteArray();
+            byte[] encryptedAsByteArray = ciphertext.ToByteArray(); // from number to array of bytes
 
             byte[] countOccurrances = new byte[byte.MaxValue + 1];
 
-            foreach (byte b in encryptedAsByteArray)
+            foreach (byte b in encryptedAsByteArray) // counting how many times each byte occurred in the ciphertext
                 countOccurrances[b]++;
 
             int numberOfBytes = encryptedAsByteArray.Length;
             for (int i = 0; i <= byte.MaxValue; i++)
             {
-                int occurrence = countOccurrances[i];
-                if (occurrence != 0)
+                int value = countOccurrances[i];
+                if (value != 0)
                 {
-                    byteOccurrence.Add(Convert.ToByte(i), occurrence);
-                    double probability = (double)occurrence / numberOfBytes;
+                    byteOccurrence.Add(Convert.ToByte(i), value); // updates dictionary of bytes and number of each of them in the ciphertext
+                    double probability = (double)value / numberOfBytes;
                     byteProbability.Add(Convert.ToByte(i), probability);
                 }
             }
-                
+               
+            // entropy is counted here
             foreach (double probability in byteProbability.Values)
             {
-                double term = -probability * Math.Log2(probability);
+                double term = -probability * Math.Log2(probability); 
                 entropy += term;
             }
         }

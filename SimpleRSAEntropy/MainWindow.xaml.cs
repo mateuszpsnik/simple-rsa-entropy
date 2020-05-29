@@ -118,8 +118,7 @@ namespace SimpleRSA
                         var byteOccurence = from pair in rsa.ByteOccurrence orderby pair.Value descending select pair;
 
                         foreach (var pair in byteOccurence)
-                            writer.WriteLine($"{pair.Key}\t\t" +
-                                $"{pair.Value}\t{rsa.ByteProbability[pair.Key]}");
+                            writer.WriteLine($"{pair.Key}\t\t{pair.Value}\t{rsa.ByteProbability[pair.Key]}");
                     }
                 }
 
@@ -163,8 +162,7 @@ namespace SimpleRSA
                 "\"input.txt\" file in the folder to easily test the app." + Environment.NewLine +
                 "3. Click on the encrypt button to begin encryption. Then either choose a text file to " +
                 "save the ciphertext or just click on the save button." + Environment.NewLine +
-                "4. Now you can click on the decrypt button to check if encryption is correct. " +
-                "Similarly to the previous step, now you can save the text in a file." + Environment.NewLine;
+                "4. Now you can write statistics about ciphertext and the entropy into two text files." + Environment.NewLine;
         }
     }
 }
