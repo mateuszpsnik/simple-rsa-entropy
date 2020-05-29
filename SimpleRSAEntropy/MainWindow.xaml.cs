@@ -39,7 +39,7 @@ namespace SimpleRSA
         {
             messageEncryptedInfoBlock.Text = "yes";
             messageEncryptedInfoBlock.Foreground = Brushes.Green;
-            decryptButton.Visibility = Visibility.Visible;
+            entropyButton.Visibility = Visibility.Visible;
         }
 
         private void Rsa_KeyGenerated(object sender, EventArgs e)
@@ -98,31 +98,9 @@ namespace SimpleRSA
 
         }
 
-        //decrypt the ciphertext and write the text to a file and closes the app
-        private void decryptButton_Click(object sender, RoutedEventArgs e)
+        private void entropyButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                rsa.Decrypt(rsa.Ciphertext);
 
-                SaveFileDialog dialog = new SaveFileDialog();
-                dialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                dialog.Filter = "text files (*.txt)|*.txt";
-                dialog.FileName = "output";
-
-                if (dialog.ShowDialog() == true)
-                {
-                    using (StreamWriter writer = new StreamWriter(dialog.FileName))
-                    {
-                        writer.WriteLine(rsa.DecryptedCiphertext);
-                        this.Close();
-                    }
-                }
-            }
-            catch (EncryptionException ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
 
         //MessageBox shown when key is being counted
