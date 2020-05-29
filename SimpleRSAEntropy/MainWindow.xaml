@@ -1,0 +1,46 @@
+﻿<Window x:Class="SimpleRSA.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleRSA"
+        mc:Ignorable="d"
+        Title="RSA" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="generateKeyButton" Click="generateKeyButton_Click">
+            <TextBlock TextWrapping="Wrap" FontSize="20">Generate a key</TextBlock>
+        </Button>
+        <Button Grid.Column="1" x:Name="loadButton" Click="loadButton_Click" Visibility="Hidden">
+            <TextBlock TextWrapping="Wrap" FontSize="20">Load a text file</TextBlock>            
+        </Button>
+        <Button Grid.Column="2" x:Name="encryptButton" Click="encryptButton_Click" Visibility="Hidden">
+            <TextBlock TextWrapping="Wrap" FontSize="20" TextAlignment="Center">
+                Encrypt the message</TextBlock>
+        </Button>
+        <Button Grid.Column="3" x:Name="decryptButton" Click="decryptButton_Click" Visibility="Hidden">
+            <TextBlock FontSize="20">Decrypt</TextBlock>
+        </Button>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="4">
+            <TextBlock Text="Key generated" FontSize="20" Margin="120, 20, 0, 0"/>
+            <TextBlock Text="no" Foreground="Red" FontSize="20" Margin="20, 20, 0, 0"
+                       x:Name="keyGeneratedInfoBlock"/>
+            <TextBlock Text="Message encrypted" FontSize="20" Margin="180, 20, 0, 0"/>
+            <TextBlock Text="no" Foreground="Red" FontSize="20" Margin="20, 20, 0, 0"
+                       x:Name="messageEncryptedInfoBlock"/>
+        </StackPanel>
+        <TextBlock TextWrapping="Wrap" FontSize="15" Grid.Row="2" Text="aaa" 
+                   Grid.ColumnSpan="4" x:Name="mainTextBlock" Margin="20"/>
+    </Grid>
+</Window>
